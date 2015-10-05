@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="C:\Tools\eclipse\log4j-1.2.jar;C:\_rmdev\Enide-2015-7-windows-x64-20150706\eclipse\plugins\org.junit_4.12.0.v201504281640\junit.jar;C:\_rmdev\Enide-2015-7-windows-x64-20150706\eclipse\plugins\org.hamcrest.core_1.3.0.v201303031735.jar" destdir="dist/doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="org.eclipseguide.persistence,org.eclipseguide.astronomy" source="1.7" sourcepath="src" splitindex="true" use="true" version="true"/>
+    </target>
+</project>

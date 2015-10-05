@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<project name="Persistence" default="BuildAll" basedir=".">
+
+<description>
+Build file for persistence component,
+org.gallardo.eclipse.persistence
+</description>
+
+  <!-- Properties -->
+  <property name="bin"  location="bin"/>
+  <property name="src"  location="src"/>
+  <property name="dist" location="dist"/>
+  <property name="doc"  location="${dist}/doc"/>
+  <property name="jardir"   location="${dist}/lib"/>
+  <property name="jarfile"  location="${jardir}/persistence.jar"/>
+  <property name="logpropfile" value="src/log4j.properties"/>
+  <property name="relpersistencepath"  
+        value="org/eclipseguide/persistence"/>
+  <property name="alltests"
+    value="org.eclipseguide.persistence.AllTests"/>
+  <property name="junit_path" location="C:/_rmdev/Enide-2015-7-windows-x64-20150706/eclipse/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
+  <property name="log4j_path" location="C:/Tools/eclipse/log4j-1.2.17/apache-log4j-1.2.17/log4j-1.2.17.jar"/>  
+    
+  <!-- Main targets -->
+  <target name="BuildAll" 
+      depends="-Init, -Prep, Compile, Test, Javadoc, Jar"
+      description="Complete rebuild. Calls Init, Compile, Test, Javadoc, and Package">
+    <echo message="Build complete."/>
+  </target>
+  
+  <target name="Compile"
+      depends="-Init"
+      description="Compile all Java classes">
+    <!-- Compile org.* (${src}) -->
+      
+      <echo message="java.class.path = ${java.class.path}"/>
+      
+    <javac srcdir="${src}" 
+        destdir="${bin}" 
+        debug="true"
+        listfiles = "true">
+      <classpath>
+                <pathelement path="${java.class.path}"/>      
+                <pathelement location="${junit_path}"/>
+                <pathelement location="${log4j_path}"/>
+            </classpath>
+    </javac>
+    <!-- Copy log4j.properties files -->
+    <copy file="${logpropfile}" todir="${bin}"/>
+    <echo message="Compiled."/>
+
+  </target>
+
+  <target name="Test" 
+      depends="-Init, Compile"  
+      description="Run JUnit tests">
+    <!-- Run test suite using separate JVM -->
+    <java fork="yes" classname="junit.textui.TestRunner" 
+            taskname="junit" failonerror="true">
+            <arg value="${alltests}"/>            
+      <classpath>
+                <pathelement path="${java.class.path}"/>
+                <pathelement location="${bin}"/>
+                <pathelement location="${log4j_path}"/>
+                <pathelement location="${junit_path}"/>
+            </classpath>
+    </java>
+    <echo message="Tested!"/>
+  </target>
+
+  <target name="Javadoc" 
+      depends="-Init"
+      description="Create Javadoc">
+    <!-- Javadoc, only for persistence classes -->
+    <javadoc destdir="${doc}"
+              author="true"
+              version="true"
+              use="true"
+              package="true">
+      <fileset dir="${src}/${relpersistencepath}"
+          includes ="**/*.java"
+          excludes = "**/*Test*"/>
+      <classpath>
+                <pathelement path="${java.class.path}"/>      
+                <pathelement location="${junit_path}"/>
+                <pathelement location="${log4j_path}"/>
+          </classpath>
+    </javadoc>
+    <echo message="Javadoc complete."/>
+  </target>
+
+  <target name="Jar" depends="-Init, Compile">
+    <!-- Jar for persistence classes -->
+    <jar destfile="${jarfile}">
+      <include name="${relpersistencepath}/*.class"/>
+          <exclude name="**/*Test*.class"/>
+    </jar>
+    <!-- Copy log4j.properties to provide a sample in dist -->
+    <copy file="src/log4j.properties" todir="${dist}"/>   
+    <echo message="Packaging complete"/>
+  </target>
+
+  <!-- Internal targets -->
+  <target name="-Init"> <!-- private target, omit description-->
+    <!-- Set timestamp and print time -->
+    <tstamp/>
+    <echo message="Build time: ${TODAY} ${TSTAMP}"/>
+  </target>
+
+  <target name="-Prep">
+    <!-- Delete output directories -->
+    <delete dir="${bin}"/>
+    <delete dir="${dist}"/>
+    <delete dir="${jardir}"/>
+    <!-- Create output directories -->
+    <mkdir dir="${bin}"/>
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${jardir}"/>
+  </target>
+
+</project>
