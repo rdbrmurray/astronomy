@@ -20,13 +20,19 @@ import org.apache.log4j.Logger;
 public class FilePersistenceServices
 {
     
+    String fileName = null;
+    
+    public FilePersistenceServices(String fileName){
+        this.fileName = fileName;
+    }
+    
     static Logger logger = Logger.getLogger(FilePersistenceServices.class) ; //Logger.getLogger(FilePersistenceServices.class);
     
-    public static boolean write(String fileName, int key, Vector v)
+    public boolean write(int key, Vector v)
     {
        boolean success = false;
        // make sure record does not already exist
-       if(read(fileName, key) != null)
+       if(read(key) != null)
        {
            return success;
        }
@@ -50,7 +56,7 @@ public class FilePersistenceServices
        return success;
     }
     
-    public static Vector read(String fileName, int key)
+    public Vector read(int key)
     {
         logger.debug("Entering read()");
      
@@ -84,7 +90,7 @@ public class FilePersistenceServices
         return v;
     }
 
-    public static String vector2String(Vector v, int key)
+    public String vector2String(Vector v, int key)
     {
         String s = null;
         StringBuffer buffer = new StringBuffer();
@@ -106,12 +112,12 @@ public class FilePersistenceServices
         return s;
     }
     
-    public static boolean update(String fileName, int key, Vector v)
+    public boolean update(int key, Vector v)
     {
        boolean success = false;
-       if (read(fileName, key) != null)
+       if (read(key) != null)
        {
-          if (delete(fileName, key) && write(fileName, key, v))
+          if (delete(key) && write(key, v))
           {
              success = true;
           }
@@ -146,13 +152,13 @@ public class FilePersistenceServices
         return key;
     }
 
-    public static boolean drop(String fileName)
+    public boolean drop()
     {
         File f = new File(fileName);
         return f.delete();
     }
 
-    public static boolean delete(String fileName, int key)
+    public boolean delete(int key)
     {
         String buffer = null;
         try
